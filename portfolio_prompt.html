@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyễn Văn A | Frontend Developer</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CSS VARIABLES (Biến toàn cục)
+        ========================================= */
+        :root {
+            --bg-color: #0f172a;        /* Deep navy/slate */
+            --text-main: #f8fafc;       /* Trắng sáng cho Tiêu đề */
+            --text-muted: #94a3b8;      /* Slate cho đoạn văn */
+            --accent: #38bdf8;          /* Cyan/teal accents */
+            --accent-hover: #0ea5e9;
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --card-hover: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* =========================================
+           2. RESET & BASE STYLES
+        ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
+        /* =========================================
+           3. SPOTLIGHT EFFECT (Hiệu ứng phát sáng)
+        ========================================= */
+        /* Phần tử overlay để tạo ra quầng sáng đi theo chuột */
+        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Không cản trở click */
+            z-index: 9999;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(56, 189, 248, 0.06), 
+                transparent 80%
+            );
+            transition: background 0.1s ease;
+        }
+
+        /* =========================================
+           4. LAYOUT STRUCTURE (Cấu trúc 2 cột)
+        ========================================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column; /* Mobile: 1 cột */
+            gap: 4rem;
+        }
+
+        /* Desktop Layout (Màn hình > 1024px) */
+        @media (min-width: 1024px) {
+            .container {
+                flex-direction: row; /* Desktop: 2 cột */
+                justify-content: space-between;
+                padding: 6rem 3rem;
+            }
+
+            .left-col {
+                width: 45%;
+                position: sticky;
+                top: 6rem;
+                height: calc(100vh - 12rem); /* Chiều cao cố định để sticky hoạt động */
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .right-col {
+                width: 50%;
+                padding-top: 0;
+            }
+        }
+
+        /* =========================================
+           5. HEADER SECTION (Cột trái)
+        ========================================= */
+        .avatar-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            padding: 4px;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        .role {
+            font-size: 1.125rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .short-bio {
+            max-width: 300px;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* Navigation menu (chỉ hiện đẹp trên desktop) */
+        .nav-menu {
+            display: none;
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .nav-menu {
+                display: block;
+                flex-grow: 1;
+                margin-top: 2rem;
+            }
+        }
+
+        .nav-menu li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-menu a {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .nav-line {
+            display: inline-block;
+            width: 30px;
+            height: 1px;
+            background-color: var(--text-muted);
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover .nav-line {
+            width: 50px;
+            background-color: var(--accent);
+        }
+
+        .nav-menu a:hover {
+            color: var(--text-main);
+        }
+
+        /* Social Icons */
+        .socials {
+            display: flex;
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .socials a {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .socials a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* =========================================
+           6. CONTENT SECTIONS (Cột phải)
+        ========================================= */
+        section {
+            margin-bottom: 6rem;
+            scroll-margin-top: 6rem; /* Để cuộn đến không bị che */
+        }
+
+        .section-title {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-main);
+        }
+
+        /* Ẩn tiêu đề section trên desktop vì nav đã lo việc đó */
+        @media (min-width: 1024px) {
+            .section-title {
+                display: none; 
+            }
+        }
+
+        .text-content p {
+            margin-bottom: 1rem;
+        }
+
+        .text-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* =========================================
+           7. SKILLS (Thanh tiến trình)
+        ========================================= */
+        .skill-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #2dd4bf);
+            border-radius: 99px;
+            width: 0; /* Sẽ được set qua inline style hoặc JS */
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* =========================================
+           8. PROJECTS (Card Dự Án)
+        ========================================= */
+        .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: block;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--card-hover);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .project-card:hover h3 {
+            color: var(--accent);
+        }
+
+        .project-title {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .project-title i {
+            font-size: 0.875rem;
+            opacity: 0;
+            transform: translateX(-10px) translateY(2px);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .project-title i {
+            opacity: 1;
+            transform: translateX(0) translateY(2px);
+        }
+
+        .project-desc {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* =========================================
+           9. CONTACT & FORM
+        ========================================= */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .contact-icon {
+            color: var(--accent);
+            font-size: 1.25rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Biểu mẫu liên hệ */
+        .contact-form {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            background-color: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-submit {
+            background-color: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Tin nhắn phản hồi form */
+        #form-message {
+            display: none;
+            padding: 1rem;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Footer cho mobile */
+        .footer-mobile {
+            text-align: center;
+            margin-top: 4rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            padding-bottom: 2rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .footer-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Lớp phủ tạo hiệu ứng sáng theo trỏ chuột -->
+    <div class="spotlight"></div>
+
+    <div class="container">
+        <!-- ==========================================
+             CỘT TRÁI: THÔNG TIN TÓM TẮT & ĐIỀU HƯỚNG
+        =========================================== -->
+        <header class="left-col">
+            <div>
+                <!-- Ảnh đại diện (Sử dụng placeholder vì không có URL thật) -->
+                <div class="avatar-container">
+                    <img src="https://placehold.co/240x240/1e293b/38bdf8?text=A" alt="Nguyễn Văn A" class="avatar">
+                </div>
+                
+                <h1 class="name">Nguyễn Văn A</h1>
+                <h2 class="role">Sinh viên năm nhất <br> Công nghệ Thông tin</h2>
+                <p class="short-bio">
+                    Đam mê lập trình và đang trên hành trình xây dựng những trải nghiệm web hiện đại, tối giản và hiệu quả.
+                </p>
+
+                <!-- Menu điều hướng (Desktop) -->
+                <ul class="nav-menu">
+                    <li><a href="#about"><span class="nav-line"></span> Giới thiệu</a></li>
+                    <li><a href="#skills"><span class="nav-line"></span> Kỹ năng</a></li>
+                    <li><a href="#projects"><span class="nav-line"></span> Dự án</a></li>
+                    <li><a href="#contact"><span class="nav-line"></span> Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <!-- Mạng xã hội / Liên hệ nhanh -->
+            <div class="socials">
+                <a href="https://github.com/vana" target="_blank" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:vana@gmail.com" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="tel:+84123456789" aria-label="Phone">
+                    <i class="fas fa-phone-alt"></i>
+                </a>
+                <a href="#contact" aria-label="Location">
+                    <i class="fas fa-map-marker-alt"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- ==========================================
+             CỘT PHẢI: NỘI DUNG CHI TIẾT
+        =========================================== -->
+        <main class="right-col">
+            
+            <!-- SECTION 1: GIỚI THIỆU -->
+            <section id="about">
+                <h2 class="section-title">Giới thiệu</h2>
+                <div class="text-content">
+                    <p>
+                        Xin chào! Mình là Nguyễn Văn A, hiện đang là <strong>Sinh viên năm nhất chuyên ngành Công nghệ Thông tin</strong>. 
+                        Ngay từ những ngày đầu bước chân vào giảng đường đại học, mình đã bị cuốn hút bởi cách những dòng code có thể tạo ra các giao diện web sống động và tương tác trực tiếp với người dùng.
+                    </p>
+                    <p>
+                        Trọng tâm hiện tại của mình là nắm vững kiến thức nền tảng về <strong>Lập trình Frontend</strong> và cấu trúc dữ liệu. Mình đặc biệt yêu thích việc xây dựng những sản phẩm có thiết kế sạch (clean design), trải nghiệm người dùng mượt mà và tối ưu hóa hiệu suất.
+                    </p>
+                    <p>
+                        Khi không học trên trường hoặc code các dự án cá nhân, mình thường dành thời gian trau dồi Tiếng Anh để mở rộng khả năng tiếp cận các tài liệu công nghệ mới nhất trên thế giới.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION 2: KỸ NĂNG -->
+            <section id="skills">
+                <h2 class="section-title">Kỹ năng</h2>
+                
+                <div class="skill-list">
+                    <!-- HTML/CSS -->
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <span>HTML & CSS</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Python cơ bản -->
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <span>Python (Cơ bản)</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tiếng Anh B1 -->
+                    <div class="skill-item">
+                        <div class="skill-info">
+                            <span>Tiếng Anh (Trình độ B1)</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DỰ ÁN -->
+            <section id="projects">
+                <h2 class="section-title">Dự án</h2>
+                
+                <!-- Card Dự án 1 -->
+                <div class="project-card">
+                    <h3 class="project-title">
+                        Website Giới Thiệu Bản Thân
+                        <i class="fas fa-arrow-right"></i>
+                    </h3>
+                    <p class="project-desc">
+                        Đồ án môn Nhập môn Công nghệ Thông tin. Một trang web cá nhân tĩnh được xây dựng hoàn toàn bằng kiến thức nền tảng, áp dụng các kỹ thuật layout hiện đại và nguyên tắc thiết kế UI/UX tối giản.
+                    </p>
+                    <div class="tech-stack">
+                        <span class="tech-tag">HTML5</span>
+                        <span class="tech-tag">CSS3</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">Responsive Design</span>
+                    </div>
+                </div>
+                
+                <!-- Có thể thêm các card dự án khác ở đây trong tương lai -->
+            </section>
+
+            <!-- SECTION 4: LIÊN HỆ -->
+            <section id="contact">
+                <h2 class="section-title">Liên hệ</h2>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <div>
+                            <strong>Địa chỉ</strong>
+                            <p>367 Lê Hồng Phong, phường Chợ Quán, TP. Hồ Chí Minh</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt contact-icon"></i>
+                        <div>
+                            <strong>Điện thoại</strong>
+                            <p><a href="tel:+84123456789">+84 123 456 789</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <p><a href="mailto:vana@gmail.com">vana@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Gửi tin nhắn -->
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Tên của bạn</label>
+                            <input type="text" id="name" class="form-control" placeholder="Nguyễn Văn A" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="vana@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Lời nhắn</label>
+                            <textarea id="message" class="form-control" placeholder="Chào A, tôi muốn kết nối..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Gửi Tin Nhắn <i class="fas fa-paper-plane" style="margin-left: 5px;"></i></button>
+                    </form>
+                    
+                    <!-- Thông báo sau khi submit (thay vì dùng alert) -->
+                    <div id="form-message">
+                        Cảm ơn bạn! Tin nhắn của bạn đã được giả lập gửi thành công.
+                    </div>
+                </div>
+            </section>
+            
+            <div class="footer-mobile">
+                &copy; 2023 Nguyễn Văn A. Thiết kế với tinh thần tối giản.
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+    =========================================== -->
+    <script>
+        // 1. Hiệu ứng Spotlight mượt mà bám theo con trỏ chuột
+        const spotlight = document.querySelector('.spotlight');
+
+        document.addEventListener('mousemove', (e) => {
+            // Lấy tọa độ chuột
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Cập nhật biến CSS để điều chỉnh vị trí radial-gradient
+            spotlight.style.setProperty('--mouse-x', `${x}px`);
+            spotlight.style.setProperty('--mouse-y', `${y}px`);
+        });
+
+        // 2. Xử lý logic Form (Tránh dùng alert, tạo UI Message)
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('form-message');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Ngăn chặn load lại trang
+            
+            // Ẩn form và hiện thông báo thành công
+            contactForm.style.display = 'none';
+            formMessage.style.display = 'block';
+            
+            // Reset form (dành cho logic thật sau này)
+            contactForm.reset();
+            
+            // Sau 5 giây hiện form lại (chỉ để demo)
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+                contactForm.style.display = 'block';
+            }, 5000);
+        });
+
+        // 3. (Tùy chọn) Highlight Nav menu theo vị trí cuộn trang
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-menu a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                // Nếu cuộn qua 1/3 chiều cao section thì đổi active
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.color = 'var(--text-muted)';
+                link.querySelector('.nav-line').style.width = '30px';
+                link.querySelector('.nav-line').style.backgroundColor = 'var(--text-muted)';
+                
+                if (link.getAttribute('href').includes(current)) {
+                    link.style.color = 'var(--text-main)';
+                    link.querySelector('.nav-line').style.width = '50px';
+                    link.querySelector('.nav-line').style.backgroundColor = 'var(--accent)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
